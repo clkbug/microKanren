@@ -1,6 +1,11 @@
 ;; Jason Hemann and Dan Friedman
 ;; microKanren, final implementation from paper
 
+(define assp
+ (lambda (pred alist)
+    (find (lambda (x) (pred (car x)))
+           alist)))
+
 (define (var c) (vector c))
 (define (var? x) (vector? x))
 (define (var=? x1 x2) (= (vector-ref x1 0) (vector-ref x2 0)))

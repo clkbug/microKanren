@@ -95,7 +95,7 @@
   (syntax-rules ()
     ((_ title tested-expression expected-result)
      (begin
-       (printf "Testing ~s\n" title)
+       (format #t "Testing ~s\n" title)
        (let* ((expected expected-result)
               (produced tested-expression))
          (or (equal? expected produced)
@@ -128,7 +128,7 @@
     ((1 2 3) (4 5))
     ((1 2 3 4) (5))
     ((1 2 3 4 5) ())))
-  
+
 (test-check 'rember*o
   (letrec
       ((rember*o (lambda (tr o)

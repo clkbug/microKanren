@@ -1,4 +1,10 @@
-(load "microKanren-test-programs.scm")
+(use gauche.test)
+
+(load "./microKanren.scm")
+; (load "./miniKanren-wrappers.scm")
+(load "./microKanren-test-programs.scm")
+
+(define empty-state '(() . 0))
 
 (test-check "second-set t1"
   (let (($ ((call/fresh (lambda (q) (== q 5))) empty-state)))
@@ -17,7 +23,7 @@
 
 (test-check "second-set t3, take"
   (let (($ (a-and-b empty-state)))
-    (take 1 $))
+    (take $ 1))
   '((((#(1) . 5) (#(0) . 7)) . 2)))
 
 (test-check "second-set t4"
@@ -32,18 +38,18 @@
 
 (test-check "who cares"
   (let (($ ((call/fresh (lambda (q) (fives q))) empty-state)))
-    (take 1 $))
+    (take $ 1))
   '((((#(0) . 5)) . 1)))
 
 (test-check "take 2 a-and-b stream"
   (let (($ (a-and-b empty-state)))
-    (take 2 $))
+    (take $ 2))
   '((((#(1) . 5) (#(0) . 7)) . 2)
     (((#(1) . 6) (#(0) . 7)) . 2)))
 
 (test-check "take-all a-and-b stream"
   (let (($ (a-and-b empty-state)))
-    (take-all $))
+    $)
   '((((#(1) . 5) (#(0) . 7)) . 2)
     (((#(1) . 6) (#(0) . 7)) . 2)))
 
@@ -56,22 +62,22 @@
   '(((#(2) b) (#(1)) (#(0) . a)) . 3))
 
 (test-check "appendo"
-  (take 2 (call-appendo empty-state))
+  (take (call-appendo empty-state) 2)
   '((((#(0) #(1) #(2) #(3)) (#(2) . #(3)) (#(1))) . 4)
     (((#(0) #(1) #(2) #(3)) (#(2) . #(6)) (#(5)) (#(3) #(4) . #(6)) (#(1) #(4) . #(5))) . 7)))
 
 (test-check "appendo2"
-  (take 2 (call-appendo2 empty-state))
+  (take (call-appendo2 empty-state) 2)
   '((((#(0) #(1) #(2) #(3)) (#(2) . #(3)) (#(1))) . 4) (((#(0) #(1) #(2) #(3)) (#(3) #(4) . #(6)) (#(2) . #(6)) (#(5)) (#(1) #(4) . #(5))) . 7)))
 
 (test-check "reify-1st across appendo"
-  (map reify-1st (take 2 (call-appendo empty-state)))
+  (map reify-1st (take (call-appendo empty-state) 2))
   '((() _.0 _.0) ((_.0) _.1 (_.0 . _.1))))
 
 (test-check "reify-1st across appendo2"
-  (map reify-1st (take 2 (call-appendo2 empty-state)))
+  (map reify-1st (take (call-appendo2 empty-state) 2))
   '((() _.0 _.0) ((_.0) _.1 (_.0 . _.1))))
 
 (test-check "many non-ans"
-  (take 1 (many-non-ans empty-state))
+  (take (many-non-ans empty-state) 1)
   '((((#(0) . 3)) . 1)))
